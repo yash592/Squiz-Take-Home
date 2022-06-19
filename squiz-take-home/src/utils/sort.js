@@ -1,4 +1,5 @@
 const sortDataByEmployeeNumber = (arr, order = 'asc') => {
+    console.log('employee sort')
     if (order === 'asc') {
         return [...arr].sort((a, b) => a.numberOfEmployees - b.numberOfEmployees)
     }
@@ -6,6 +7,7 @@ const sortDataByEmployeeNumber = (arr, order = 'asc') => {
 }
 
 const sortDataByName = (arr, order = 'asc') => {
+    console.log('sort by name')
 
 }
 
