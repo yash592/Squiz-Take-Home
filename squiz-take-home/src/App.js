@@ -1,17 +1,21 @@
 import logo from './logo.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoffee, faSort } from '@fortawesome/free-solid-svg-icons'
 import { sortDataByEmployeeNumber, sortDataByName } from './utils/sort.js'
 import './App.css';
 import React, { useState, useEffect } from 'react';
-const SQUIZ_URL = 'https://dujour.squiz.cloud/developer-challenge/data'
+const SQUIZ_URL = 'https://dujour.squiz.cloud/developer-challenge/data';
+
 
 function App() {
 
   const [data, setData] = useState([])
   const [country, setCountry] = useState('')
   const [searchField, setSearchField] = useState('');
+  const [order, setOrder] = useState(true)
   // const [industry, setIndustry] = useState['']
 
-  console.log('data', data)
+  // console.log('data', order)
 
 
   useEffect(() => {
@@ -37,9 +41,14 @@ function App() {
     console.log(data)
   })
 
-  const sortByEmployees = (data) => {
-    let sortedEmployees = sortDataByEmployeeNumber(data, 'desc');
-    setData(sortedEmployees);
+  const sortByParameter = (data, sortBy) => {
+    let sortOrder = '';
+    setOrder(!order);
+    console.log(sortBy);
+
+    order ? sortOrder = 'asc' : sortOrder = 'desc'
+    let sortedEmployees = (sortBy === 'employeecount') ? sortDataByEmployeeNumber(data, sortOrder) : sortDataByName(data, sortOrder);
+    setData(sortedEmployees)
   }
 
 
@@ -50,45 +59,55 @@ function App() {
         <input
           className='search-box'
           type='search'
-          placeholder='Search By Country'
+          placeholder='Search'
           onChange={handleChange}
         />
-        <input
-          className='search-box-industry'
-          type='search'
-          placeholder='Search By Industry'
-          onChange={handleChange}
-        />
-
-        <table>
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Country</th>
-              <th>Industry</th>
-              <th onClick={() => sortByEmployees(data)}># of Employees</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map(name =>
+        <select name='search term'>
+          <option value='country'>Country</option>
+          <option value='industry'>Industry</option>
+        </select>
+        <div className="container">
+          <table className='table'>
+            <thead>
               <tr>
-                <td>{name.name}</td>
-                <td>{name.country}</td>
-                <td>{name.industry}</td>
-                <td>{name.numberOfEmployees}</td>
-              </tr >
+                <th onClick={() => sortByParameter(data, 'company')}>
+                  <span style={{ paddingRight: 20 }}>
+                    <FontAwesomeIcon icon={faSort} />
+                  </span>
+                  Company
+                </th>
+                <th>Country</th>
+                <th>
+                  Industry
+                </th>
 
-            )}
-          </tbody>
+                <th onClick={() => sortByParameter(data, 'employeecount')}>
+                  <span style={{ paddingRight: 20 }}>
+                    <FontAwesomeIcon icon={faSort} />
+                  </span>
+                  # of Employees
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.map(name =>
+                <tr>
+                  <td>{name.name}</td>
+                  <td>{name.country}</td>
+                  <td>{name.industry}</td>
+                  <td>{name.numberOfEmployees}</td>
 
+                </tr >
 
+              )}
+            </tbody>
+          </table>
 
+        </div>
 
+      </header >
 
-        </table>
-      </header>
-
-    </div>
+    </div >
   );
 }
 
