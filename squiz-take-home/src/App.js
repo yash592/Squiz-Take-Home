@@ -1,4 +1,5 @@
 import logo from './logo.svg';
+import { sortDataByEmployeeNumber, sortDataByName } from './utils/sort.js'
 import './App.css';
 import React, { useState, useEffect } from 'react';
 const SQUIZ_URL = 'https://dujour.squiz.cloud/developer-challenge/data'
@@ -21,6 +22,8 @@ function App() {
   }, [])
 
 
+
+
   const handleChange = (event) => {
     const searchString = event.target.value.toLocaleLowerCase();
     console.log(searchString)
@@ -33,6 +36,11 @@ function App() {
     setData(filteredData);
     console.log(data)
   })
+
+  const sortByEmployees = (data) => {
+    let sortedEmployees = sortDataByEmployeeNumber(data, 'desc');
+    setData(sortedEmployees);
+  }
 
 
   return (
@@ -51,11 +59,33 @@ function App() {
           placeholder='Search By Industry'
           onChange={handleChange}
         />
-        <ul>
-          {filteredData.map(name =>
-            <li>{name.name}</li>
-          )}
-        </ul>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Country</th>
+              <th>Industry</th>
+              <th onClick={() => sortByEmployees(data)}># of Employees</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map(name =>
+              <tr>
+                <td>{name.name}</td>
+                <td>{name.country}</td>
+                <td>{name.industry}</td>
+                <td>{name.numberOfEmployees}</td>
+              </tr >
+
+            )}
+          </tbody>
+
+
+
+
+
+        </table>
       </header>
 
     </div>
