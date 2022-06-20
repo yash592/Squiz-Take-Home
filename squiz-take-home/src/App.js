@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import { faCoffee, faSort } from '@fortawesome/free-solid-svg-icons'
 import { sortDataByEmployeeNumber, sortDataByName } from './utils/sort.js'
 import './App.css';
@@ -7,15 +8,16 @@ import React, { useState, useEffect } from 'react';
 const SQUIZ_URL = 'https://dujour.squiz.cloud/developer-challenge/data';
 
 
+
+
 function App() {
 
   const [data, setData] = useState([])
   const [country, setCountry] = useState('')
   const [searchField, setSearchField] = useState('');
+  const [searchCategory, setSearchCategory] = useState('country');
   const [order, setOrder] = useState(true)
-  // const [industry, setIndustry] = useState['']
-
-  // console.log('data', order)
+  const [filteredData, setFilteredData] = useState(data)
 
 
   useEffect(() => {
@@ -25,26 +27,31 @@ function App() {
       .catch(err => console.log(err))
   }, [])
 
-
-
+  useEffect(() => {
+    const filteredData = data.filter((clients) => {
+      console.log(clients.country.toLowerCase())
+      if (searchCategory === 'country') {
+        return clients.country.toLowerCase().includes(searchField);
+      } else {
+        return clients.industry.toLowerCase().includes(searchField);
+      }
+    })
+    setFilteredData(filteredData)
+  }, [data, searchField])
 
   const handleChange = (event) => {
     const searchString = event.target.value.toLocaleLowerCase();
-    console.log(searchString)
     setSearchField(searchString);
-
   }
 
-  const filteredData = data.filter((clients) => {
-    return clients.name.toLocaleLowerCase().includes(searchField);
-    setData(filteredData);
-    console.log(data)
-  })
+  const dropdownChange = (event) => {
+    const category = event.target.value;
+    setSearchCategory(category);
+  }
 
   const sortByParameter = (data, sortBy) => {
     let sortOrder = '';
     setOrder(!order);
-    console.log(sortBy);
 
     order ? sortOrder = 'asc' : sortOrder = 'desc'
     let sortedEmployees = (sortBy === 'employeecount') ? sortDataByEmployeeNumber(data, sortOrder) : sortDataByName(data, sortOrder);
@@ -53,61 +60,59 @@ function App() {
 
 
   return (
-    <div className="App">
-      <header className="App-header">
-
-        <input
-          className='search-box'
-          type='search'
-          placeholder='Search'
-          onChange={handleChange}
-        />
-        <select name='search term'>
-          <option value='country'>Country</option>
-          <option value='industry'>Industry</option>
-        </select>
-        <div className="container">
-          <table className='table'>
-            <thead>
-              <tr>
-                <th onClick={() => sortByParameter(data, 'company')}>
-                  <span style={{ paddingRight: 20 }}>
-                    <FontAwesomeIcon icon={faSort} />
-                  </span>
-                  Company
-                </th>
-                <th>Country</th>
-                <th>
-                  Industry
-                </th>
-
-                <th onClick={() => sortByParameter(data, 'employeecount')}>
-                  <span style={{ paddingRight: 20 }}>
-                    <FontAwesomeIcon icon={faSort} />
-                  </span>
-                  # of Employees
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map(name =>
+    <Container fluid>
+      <Row>
+        <Col md={2}>
+          <input
+            className='search-box'
+            type='search'
+            placeholder='Search'
+            onChange={handleChange}
+          />
+          <select name='search term' onChange={dropdownChange}>
+            <option value='country'>Country</option>
+            <option value='industry'>Industry</option>
+          </select>
+        </Col>
+        <Col md={10}>
+          <div className="container">
+            <table className='table'>
+              <thead>
                 <tr>
-                  <td>{name.name}</td>
-                  <td>{name.country}</td>
-                  <td>{name.industry}</td>
-                  <td>{name.numberOfEmployees}</td>
+                  <th onClick={() => sortByParameter(data, 'company')}>
+                    <span style={{ paddingRight: 20 }}>
+                      <FontAwesomeIcon icon={faSort} />
+                    </span>
+                    Company
+                  </th>
+                  <th>Country</th>
+                  <th>
+                    Industry
+                  </th>
 
-                </tr >
-
-              )}
-            </tbody>
-          </table>
-
-        </div>
-
-      </header >
-
-    </div >
+                  <th onClick={() => sortByParameter(data, 'employeecount')}>
+                    <span style={{ paddingRight: 20 }}>
+                      <FontAwesomeIcon icon={faSort} />
+                    </span>
+                    # of Employees
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map(name =>
+                  <tr>
+                    <td>{name.name}</td>
+                    <td>{name.country}</td>
+                    <td>{name.industry}</td>
+                    <td>{name.numberOfEmployees}</td>
+                  </tr >
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

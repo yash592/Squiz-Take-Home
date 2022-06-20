@@ -8,6 +8,21 @@ const sortDataByEmployeeNumber = (arr, order = 'asc') => {
 
 const sortDataByName = (arr, order = 'asc') => {
     console.log('sort by name')
+    return [...arr].sort((a, b) => {
+        let first = a.name.toLowerCase();
+        let second = b.name.toLowerCase();
+        console.log(first, second);
+
+        if (first < second) {
+            return -1;
+        }
+        if (first > second) {
+            return 1;
+        }
+        return 0;
+
+
+    })
 
 }
 
