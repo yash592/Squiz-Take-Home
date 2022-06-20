@@ -11,10 +11,15 @@
 .table {
   width: 100%;
   /* background-color: wheat; */
-  border: #61dafb 10px;
+  border: #61dafb 1px;
   flex: auto;
   flex-direction: row;
   justify-content: space-between
+}
+
+.search-row {
+  flex: auto;
+  flex-direction: row;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -24,7 +29,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  /* background-color: #282c34; */
   min-height: 100vh;
   display: flex;
   flex-direction: row;
